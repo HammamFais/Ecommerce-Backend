@@ -1,0 +1,18 @@
+# nixpacks.toml — fallback kalau Railway tidak pakai Dockerfile
+# Railway akan otomatis pakai Dockerfile kalau ada, file ini sebagai backup
+
+[phases.setup]
+nixPkgs = ["php83", "php83Extensions.pdo_pgsql", "php83Extensions.mbstring", "php83Extensions.bcmath", "php83Extensions.xml", "php83Extensions.curl", "composer"]
+
+[phases.install]
+cmds = ["composer install --no-dev --optimize-autoloader"]
+
+[phases.build]
+cmds = [
+  "php artisan config:clear",
+  "php artisan route:clear",
+  "php artisan view:clear"
+]
+
+[start]
+cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"

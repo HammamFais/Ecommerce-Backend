@@ -1,0 +1,60 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      APP_NAME: PasarLokal
+      APP_ENV: local
+      APP_KEY: base64:O4zJaoB4rluDnmQM42tjPCHOmhdmzxpWNPmLUMqS11Q=
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8080
+
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ecommerce
+      DB_USERNAME: postgres
+      DB_PASSWORD: admin
+
+      JWT_SECRET: 4WEvC7CEpOKJlYRkYavjqj2basqS7K3k9KzhDepxFn7AHXVRcFgzXDQQ8gc2VXOR
+
+      MIDTRANS_SERVER_KEY: Mid-server-W8hVEupZc8dD9UbddvXJxlNR
+      MIDTRANS_CLIENT_KEY: Mid-client-N9TCfKVME66aCBLa
+      MIDTRANS_IS_PRODUCTION: "false"
+
+      RAJAONGKIR_API_KEY: nq8cNmaQ0897a0aca12a5904UwzkPpt
+      RAJAONGKIR_BASE_URL: https://api.rajaongkir.com/starter
+
+      SESSION_DRIVER: file
+      CACHE_STORE: file
+      QUEUE_CONNECTION: sync
+      LOG_CHANNEL: stderr
+      LOG_LEVEL: debug
+    volumes:
+      - storage_data:/var/www/html/storage/app
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ecommerce"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  pg_data:
+  storage_data:

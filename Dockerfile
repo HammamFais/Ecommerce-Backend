@@ -29,8 +29,8 @@ RUN docker-php-ext-install \
     bcmath \
     xml
 
-# Enable Apache mod_rewrite (required for Laravel routing)
-RUN a2enmod rewrite
+# Disable mpm_event, enable mpm_prefork (required for PHP), then enable rewrite
+RUN a2dismod mpm_event && a2enmod mpm_prefork rewrite
 
 # Install Composer via official installer
 RUN curl -sS https://getcomposer.org/installer | php -- \

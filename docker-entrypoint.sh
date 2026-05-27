@@ -16,6 +16,10 @@ fi
 echo "Running migrations..."
 php artisan migrate --force
 
+# Run seeders
+echo "Running seeders..."
+php artisan db:seed --force
+
 # Clear and cache config for production
 php artisan config:clear
 php artisan route:clear

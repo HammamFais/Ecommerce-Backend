@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# Fix Apache MPM at runtime
+a2dismod mpm_event mpm_worker 2>/dev/null || true
+a2enmod mpm_prefork 2>/dev/null || true
+a2enmod rewrite 2>/dev/null || true
+
 # Generate APP_KEY if not set
 if [ -z "$APP_KEY" ]; then
     echo "Generating APP_KEY..."
@@ -10,6 +15,10 @@ fi
 # Run migrations
 echo "Running migrations..."
 php artisan migrate --force
+
+# Run seeders
+echo "Running seeders..."
+php artisan db:seed --force
 
 # Clear and cache config for production
 php artisan config:clear

@@ -37,6 +37,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('orders', [OrderController::class, 'store']);
     Route::get('orders', [OrderController::class, 'index']);
     Route::get('orders/{id}', [OrderController::class, 'show']);
+    Route::put('orders/{id}/cancel', [OrderController::class, 'cancelOrder']);
 
     // Payment
     Route::post('payment/{order_id}', [PaymentController::class, 'create']);

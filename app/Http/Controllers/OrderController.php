@@ -83,6 +83,7 @@ class OrderController extends Controller
                     'shipping_city'    => $request->shipping_city,
                     'shipping_cost'    => $shippingCost,
                     'courier'          => $request->courier,
+                    'notes'            => $request->notes,
                 ]);
 
                 foreach ($items as $item) {
@@ -130,6 +131,35 @@ class OrderController extends Controller
             'success' => true,
             'message' => 'Daftar order masuk berhasil diambil',
             'data'    => $orders,
+        ]);
+    }
+
+    public function cancelOrder(int $id): JsonResponse
+    {
+        $order = Order::where('id', $id)
+            ->where('buyer_id', auth('api')->id())
+            ->first();
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order tidak ditemukan',
+            ], 404);
+        }
+
+        if ($order->status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya order berstatus "pending" yang dapat dibatalkan',
+            ], 400);
+        }
+
+        $order->update(['status' => 'cancelled']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order berhasil dibatalkan',
+            'data'    => $order,
         ]);
     }
 

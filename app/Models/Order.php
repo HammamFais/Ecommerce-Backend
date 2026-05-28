@@ -11,7 +11,7 @@ class Order extends Model
 
     protected $fillable = [
         'buyer_id', 'seller_id', 'total_price', 'status',
-        'shipping_address', 'shipping_city', 'shipping_cost', 'courier',
+        'shipping_address', 'shipping_city', 'shipping_cost', 'courier', 'notes',
     ];
 
     protected function casts(): array

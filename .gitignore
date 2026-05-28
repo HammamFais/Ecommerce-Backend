@@ -25,3 +25,10 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Claude Code
+/.claude
+CLAUDE.md
+
+# Docker local only
+docker-compose.yml

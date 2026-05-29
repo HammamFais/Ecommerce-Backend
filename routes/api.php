@@ -28,25 +28,36 @@ Route::post('payment/notification', [PaymentController::class, 'notification']);
 // Shipping cities (public, dipakai saat load profile page)
 Route::get('shipping/cities', [ShippingController::class, 'cities']);
 
-// TEMPORARY — test koneksi RajaOngkir V2 dari Railway, hapus setelah selesai
+// TEMPORARY — isolasi masalah API key RajaOngkir, hapus setelah selesai
 Route::get('test-rajaongkir', function () {
-    try {
-        $response = \Illuminate\Support\Facades\Http::timeout(10)
-            ->withHeaders(['key' => config('services.rajaongkir.api_key')])
-            ->asForm()
-            ->post('https://rajaongkir.komerce.id/api/v1/calculate/domestic-cost', [
-                'origin'      => '444',
-                'destination' => '154',
-                'weight'      => '1000',
-                'courier'     => 'jne',
-            ]);
-        return response()->json([
-            'status' => $response->status(),
-            'body'   => $response->json(),
-        ]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
-    }
+    $url    = 'https://rajaongkir.komerce.id/api/v1/calculate/domestic-cost';
+    $params = ['origin' => '444', 'destination' => '154', 'weight' => '1000', 'courier' => 'jne'];
+
+    $keyFromConfig   = config('services.rajaongkir.api_key');
+    $keyHardcoded    = 'nq8cNmaQ0897a0aca12a5904LlwzkPpt';
+
+    $hit = function (string $key) use ($url, $params): array {
+        try {
+            $res = \Illuminate\Support\Facades\Http::timeout(10)
+                ->withHeaders(['key' => $key])
+                ->asForm()
+                ->post($url, $params);
+            return ['status' => $res->status(), 'body' => $res->json()];
+        } catch (\Exception $e) {
+            return ['status' => 'exception', 'error' => $e->getMessage()];
+        }
+    };
+
+    return response()->json([
+        'test1_config' => [
+            'key_prefix' => substr($keyFromConfig, 0, 5),
+            'result'     => $hit($keyFromConfig),
+        ],
+        'test2_hardcoded' => [
+            'key_prefix' => substr($keyHardcoded, 0, 5),
+            'result'     => $hit($keyHardcoded),
+        ],
+    ]);
 });
 
 // Protected routes

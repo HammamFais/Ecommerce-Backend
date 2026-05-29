@@ -13,26 +13,27 @@ class DashboardController extends Controller
         $sellerId = auth('api')->id();
         $paidStatuses = ['dibayar', 'diproses', 'dikirim', 'selesai'];
 
+        $thisMonthStart = now()->startOfMonth();
+        $thisMonthEnd   = now()->endOfMonth();
+        $lastMonthStart = now()->subMonth()->startOfMonth();
+        $lastMonthEnd   = now()->subMonth()->endOfMonth();
+
         $totalSales = Order::where('seller_id', $sellerId)
             ->whereIn('status', $paidStatuses)
-            ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
+            ->whereBetween('created_at', [$thisMonthStart, $thisMonthEnd])
             ->sum('total_price');
 
         $lastMonthSales = Order::where('seller_id', $sellerId)
             ->whereIn('status', $paidStatuses)
-            ->whereMonth('created_at', now()->subMonth()->month)
-            ->whereYear('created_at', now()->subMonth()->year)
+            ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
             ->sum('total_price');
 
         $totalOrders = Order::where('seller_id', $sellerId)
-            ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
+            ->whereBetween('created_at', [$thisMonthStart, $thisMonthEnd])
             ->count();
 
         $lastMonthOrders = Order::where('seller_id', $sellerId)
-            ->whereMonth('created_at', now()->subMonth()->month)
-            ->whereYear('created_at', now()->subMonth()->year)
+            ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
             ->count();
 
         $pendingOrders = Order::where('seller_id', $sellerId)
@@ -51,7 +52,7 @@ class DashboardController extends Controller
         $revenueChart = Order::where('seller_id', $sellerId)
             ->whereIn('status', $paidStatuses)
             ->where('created_at', '>=', now()->subMonths(6)->startOfMonth())
-            ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, SUM(total_price) as total')
+            ->selectRaw("EXTRACT(YEAR FROM created_at) as year, EXTRACT(MONTH FROM created_at) as month, SUM(total_price) as total")
             ->groupBy('year', 'month')
             ->orderBy('year')
             ->orderBy('month')

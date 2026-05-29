@@ -58,6 +58,14 @@ class DashboardController extends Controller
             ->orderBy('month')
             ->get();
 
+        $weeklyChart = Order::where('seller_id', $sellerId)
+            ->whereIn('status', $paidStatuses)
+            ->where('created_at', '>=', now()->subDays(6)->startOfDay())
+            ->selectRaw("DATE(created_at) as date, EXTRACT(DOW FROM created_at) as day_of_week, TO_CHAR(created_at, 'DD Mon') as day_label, SUM(total_price) as total")
+            ->groupBy('date', 'day_of_week', 'day_label')
+            ->orderBy('date')
+            ->get(['date', 'day_of_week', 'day_label', 'total']);
+
         $orderStatusCounts = Order::where('seller_id', $sellerId)
             ->selectRaw('status, COUNT(*) as count')
             ->groupBy('status')
@@ -88,7 +96,8 @@ class DashboardController extends Controller
                 'pending_orders'     => $pendingOrders,
                 'active_products'    => $activeProducts,
                 'low_stock_products' => $lowStockProducts,
-                'revenue_chart'      => $revenueChart,
+                'revenue_chart'       => $revenueChart,
+                'weekly_chart'        => $weeklyChart,
                 'order_status_counts' => $orderStatusCounts,
                 'recent_orders'      => $recentOrders,
             ],

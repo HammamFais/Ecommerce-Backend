@@ -84,6 +84,7 @@ class AuthController extends Controller
             'phone'    => 'sometimes|nullable|string|max:20',
             'address'  => 'sometimes|nullable|string|max:500',
             'city'     => 'sometimes|nullable|string|max:100',
+            'city_id'  => 'sometimes|nullable|string|max:20',
             'province' => 'sometimes|nullable|string|max:100',
         ]);
 

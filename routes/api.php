@@ -28,12 +28,13 @@ Route::post('payment/notification', [PaymentController::class, 'notification']);
 // Shipping cities (public, dipakai saat load profile page)
 Route::get('shipping/cities', [ShippingController::class, 'cities']);
 
-// TEMPORARY — test koneksi RajaOngkir dari Railway, hapus setelah selesai
+// TEMPORARY — test koneksi RajaOngkir V2 dari Railway, hapus setelah selesai
 Route::get('test-rajaongkir', function () {
     try {
         $response = \Illuminate\Support\Facades\Http::timeout(10)
             ->withHeaders(['key' => config('services.rajaongkir.api_key')])
-            ->post('https://api.rajaongkir.com/starter/cost', [
+            ->asForm()
+            ->post('https://rajaongkir.komerce.id/api/v1/calculate/domestic-cost', [
                 'origin'      => '444',
                 'destination' => '154',
                 'weight'      => '1000',

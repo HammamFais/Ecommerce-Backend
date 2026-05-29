@@ -163,6 +163,22 @@ class OrderController extends Controller
         ]);
     }
 
+    public function confirmReceived(int $id): JsonResponse
+    {
+        $order = Order::where('id', $id)
+            ->where('buyer_id', auth('api')->id())
+            ->where('status', 'dikirim')
+            ->firstOrFail();
+
+        $order->update(['status' => 'selesai']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pesanan berhasil dikonfirmasi diterima',
+            'data'    => $order->fresh(),
+        ]);
+    }
+
     public function updateStatus(UpdateOrderStatusRequest $request, int $id): JsonResponse
     {
         $order = Order::where('id', $id)

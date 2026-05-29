@@ -74,4 +74,48 @@ class ShippingController extends Controller
             ]],
         ]);
     }
+
+    public function cities(): JsonResponse
+    {
+        try {
+            $response = Http::timeout(8)
+                ->withHeaders(['key' => config('services.rajaongkir.api_key')])
+                ->get('https://api.rajaongkir.com/starter/city');
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if (!empty($data['rajaongkir']['results'])) {
+                    return response()->json([
+                        'success' => true,
+                        'data'    => $data['rajaongkir']['results'],
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {}
+
+        // Fallback: kota-kota besar
+        return response()->json([
+            'success'     => true,
+            'is_fallback' => true,
+            'data'        => [
+                ['city_id' => '39',  'city_name' => 'Bandung',        'province' => 'Jawa Barat'],
+                ['city_id' => '80',  'city_name' => 'Denpasar',       'province' => 'Bali'],
+                ['city_id' => '114', 'city_name' => 'Makassar',       'province' => 'Sulawesi Selatan'],
+                ['city_id' => '152', 'city_name' => 'Jakarta Pusat',  'province' => 'DKI Jakarta'],
+                ['city_id' => '151', 'city_name' => 'Jakarta Barat',  'province' => 'DKI Jakarta'],
+                ['city_id' => '153', 'city_name' => 'Jakarta Selatan','province' => 'DKI Jakarta'],
+                ['city_id' => '154', 'city_name' => 'Jakarta Timur',  'province' => 'DKI Jakarta'],
+                ['city_id' => '155', 'city_name' => 'Jakarta Utara',  'province' => 'DKI Jakarta'],
+                ['city_id' => '171', 'city_name' => 'Malang',         'province' => 'Jawa Timur'],
+                ['city_id' => '244', 'city_name' => 'Medan',          'province' => 'Sumatera Utara'],
+                ['city_id' => '263', 'city_name' => 'Palembang',      'province' => 'Sumatera Selatan'],
+                ['city_id' => '288', 'city_name' => 'Pontianak',      'province' => 'Kalimantan Barat'],
+                ['city_id' => '371', 'city_name' => 'Semarang',       'province' => 'Jawa Tengah'],
+                ['city_id' => '399', 'city_name' => 'Solo',           'province' => 'Jawa Tengah'],
+                ['city_id' => '444', 'city_name' => 'Surabaya',       'province' => 'Jawa Timur'],
+                ['city_id' => '455', 'city_name' => 'Tangerang',      'province' => 'Banten'],
+                ['city_id' => '501', 'city_name' => 'Yogyakarta',     'province' => 'DI Yogyakarta'],
+            ],
+        ]);
+    }
 }

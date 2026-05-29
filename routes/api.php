@@ -25,6 +25,9 @@ Route::get('products/{id}', [ProductController::class, 'show']);
 // Midtrans webhook (public, no auth)
 Route::post('payment/notification', [PaymentController::class, 'notification']);
 
+// Shipping cities (public, dipakai saat load profile page)
+Route::get('shipping/cities', [ShippingController::class, 'cities']);
+
 // Protected routes
 Route::middleware('auth:api')->group(function () {
     // Cart (buyer)

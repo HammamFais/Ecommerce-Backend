@@ -74,4 +74,25 @@ class AuthController extends Controller
             'data'    => auth('api')->user(),
         ]);
     }
+
+    public function updateProfile(\Illuminate\Http\Request $request): JsonResponse
+    {
+        $user = auth('api')->user();
+
+        $validated = $request->validate([
+            'name'     => 'sometimes|string|max:255',
+            'phone'    => 'sometimes|nullable|string|max:20',
+            'address'  => 'sometimes|nullable|string|max:500',
+            'city'     => 'sometimes|nullable|string|max:100',
+            'province' => 'sometimes|nullable|string|max:100',
+        ]);
+
+        $user->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profil berhasil diperbarui',
+            'data'    => $user->fresh(),
+        ]);
+    }
 }

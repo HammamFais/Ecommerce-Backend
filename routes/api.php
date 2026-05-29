@@ -28,6 +28,26 @@ Route::post('payment/notification', [PaymentController::class, 'notification']);
 // Shipping cities (public, dipakai saat load profile page)
 Route::get('shipping/cities', [ShippingController::class, 'cities']);
 
+// TEMPORARY — test koneksi RajaOngkir dari Railway, hapus setelah selesai
+Route::get('test-rajaongkir', function () {
+    try {
+        $response = \Illuminate\Support\Facades\Http::timeout(10)
+            ->withHeaders(['key' => config('services.rajaongkir.api_key')])
+            ->post('https://api.rajaongkir.com/starter/cost', [
+                'origin'      => '444',
+                'destination' => '154',
+                'weight'      => '1000',
+                'courier'     => 'jne',
+            ]);
+        return response()->json([
+            'status' => $response->status(),
+            'body'   => $response->json(),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
+});
+
 // Protected routes
 Route::middleware('auth:api')->group(function () {
     // Cart (buyer)

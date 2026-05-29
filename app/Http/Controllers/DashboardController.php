@@ -13,7 +13,9 @@ class DashboardController extends Controller
         $sellerId = auth('api')->id();
 
         $totalSales = Order::where('seller_id', $sellerId)
-            ->where('status', 'done')
+            ->whereIn('status', ['dibayar', 'diproses', 'dikirim', 'selesai'])
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
             ->sum('total_price');
 
         $pendingOrders = Order::where('seller_id', $sellerId)

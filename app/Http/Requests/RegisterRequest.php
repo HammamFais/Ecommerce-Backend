@@ -22,8 +22,9 @@ class RegisterRequest extends FormRequest
             'role'     => 'sometimes|in:buyer,seller',
             'phone'    => 'nullable|string|max:20',
             'address'  => 'nullable|string',
-            'city'     => 'nullable|string|max:100',
-            'province' => 'nullable|string|max:100',
+            'city'        => 'nullable|string|max:100',
+            'province'    => 'nullable|string|max:100',
+            'postal_code' => 'nullable|string|max:10',
         ];
     }
 

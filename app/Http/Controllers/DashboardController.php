@@ -11,7 +11,7 @@ class DashboardController extends Controller
     public function seller(): JsonResponse
     {
         $sellerId = auth('api')->id();
-        $paidStatuses = ['dibayar', 'diproses', 'dikirim', 'selesai'];
+        $paidStatuses = ['paid', 'processing', 'shipped', 'done'];
 
         $thisMonthStart = now()->startOfMonth();
         $thisMonthEnd   = now()->endOfMonth();

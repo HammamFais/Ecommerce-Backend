@@ -19,8 +19,9 @@ class AuthController extends Controller
             'role'     => $request->role ?? 'buyer',
             'phone'    => $request->phone,
             'address'  => $request->address,
-            'city'     => $request->city,
-            'province' => $request->province,
+            'city'        => $request->city,
+            'province'    => $request->province,
+            'postal_code' => $request->postal_code,
         ]);
 
         $token = JWTAuth::fromUser($user);
@@ -84,8 +85,9 @@ class AuthController extends Controller
             'phone'    => 'sometimes|nullable|string|max:20',
             'address'  => 'sometimes|nullable|string|max:500',
             'city'     => 'sometimes|nullable|string|max:100',
-            'city_id'  => 'sometimes|nullable|string|max:20',
-            'province' => 'sometimes|nullable|string|max:100',
+            'city_id'     => 'sometimes|nullable|string|max:20',
+            'province'    => 'sometimes|nullable|string|max:100',
+            'postal_code' => 'sometimes|nullable|string|max:10',
         ]);
 
         $user->update($validated);

@@ -42,7 +42,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('orders', [OrderController::class, 'index']);
     Route::get('orders/{id}', [OrderController::class, 'show']);
     Route::put('orders/{id}/cancel', [OrderController::class, 'cancelOrder']);
-    Route::put('orders/{id}/confirm', [OrderController::class, 'confirmReceived']);
 
     // Payment
     Route::post('payment/{order_id}', [PaymentController::class, 'create']);

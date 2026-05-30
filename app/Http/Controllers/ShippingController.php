@@ -76,37 +76,11 @@ class ShippingController extends Controller
 
     public function cities(): JsonResponse
     {
-        try {
-            $response = Http::timeout(8)
-                ->withHeaders(['key' => config('services.rajaongkir.api_key')])
-                ->get(self::RAJAONGKIR_V2 . '/destination/domestic-destination', [
-                    'search' => '',
-                ]);
-
-            if ($response->successful()) {
-                $data    = $response->json();
-                $results = $data['data'] ?? [];
-                if (!empty($results)) {
-                    // Map ke format lama agar frontend tidak perlu diubah
-                    $cities = array_map(fn($item) => [
-                        'city_id'   => $item['id'],
-                        'city_name' => $item['city_name'],
-                        'province'  => $item['province_name'],
-                    ], $results);
-
-                    return response()->json([
-                        'success' => true,
-                        'data'    => $cities,
-                    ]);
-                }
-            }
-        } catch (\Exception $e) {}
-
-        // Fallback: kota-kota besar
+        // RajaOngkir V2 domestic-destination adalah autocomplete per keyword,
+        // bukan endpoint list kota — gunakan daftar kota besar statis.
         return response()->json([
-            'success'     => true,
-            'is_fallback' => true,
-            'data'        => [
+            'success' => true,
+            'data'    => [
                 ['city_id' => '39',  'city_name' => 'Bandung',         'province' => 'Jawa Barat'],
                 ['city_id' => '80',  'city_name' => 'Denpasar',        'province' => 'Bali'],
                 ['city_id' => '114', 'city_name' => 'Makassar',        'province' => 'Sulawesi Selatan'],

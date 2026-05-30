@@ -20,6 +20,7 @@ class AuthController extends Controller
             'phone'    => $request->phone,
             'address'  => $request->address,
             'city'        => $request->city,
+            'city_id'     => $request->city_id,
             'province'    => $request->province,
             'postal_code' => $request->postal_code,
         ]);

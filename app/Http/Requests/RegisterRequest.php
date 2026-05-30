@@ -19,11 +19,12 @@ class RegisterRequest extends FormRequest
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role'     => 'sometimes|in:buyer,seller',
-            'phone'    => 'nullable|string|max:20',
-            'address'  => 'nullable|string',
-            'city'        => 'nullable|string|max:100',
-            'province'    => 'nullable|string|max:100',
+            'role'        => 'sometimes|in:buyer,seller',
+            'phone'       => 'required|string|max:20',
+            'address'     => 'required|string',
+            'city'        => 'required|string|max:100',
+            'city_id'     => 'required|string|max:20',
+            'province'    => 'required|string|max:100',
             'postal_code' => 'nullable|string|max:10',
         ];
     }

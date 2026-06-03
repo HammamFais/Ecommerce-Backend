@@ -66,7 +66,8 @@ Repo ini disiapkan untuk deploy ke host PHP seperti Railway, bukan Netlify.
    - `DB_URL` atau `DATABASE_URL` dari Railway database service
    - Alternatif, set `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` jika kamu memakai variabel terpisah
 3. Jika ingin migrasi otomatis saat container start, set `RUN_MIGRATIONS_ON_STARTUP=true`.
-4. Seeder tidak dijalankan otomatis. Aktifkan hanya jika memang diperlukan dengan `RUN_SEED_ON_STARTUP=true`.
+4. Saat migrasi otomatis aktif, seeder juga ikut dijalankan lewat `php artisan migrate --seed`.
+5. Seeder terpisah tetap bisa dijalankan hanya jika memang diperlukan dengan `RUN_SEED_ON_STARTUP=true`.
 
 **Koneksi database di Railway:**
 

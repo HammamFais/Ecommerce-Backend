@@ -35,10 +35,10 @@ fi
 # Run migrations only when explicitly enabled.
 if [ "${RUN_MIGRATIONS_ON_STARTUP:-false}" = "true" ]; then
     echo "Running migrations..."
-    php artisan migrate --force
+    php artisan migrate --force --seed
 fi
 
-# Run seeders only when explicitly enabled.
+# Run seeders separately only when explicitly enabled.
 if [ "${RUN_SEED_ON_STARTUP:-false}" = "true" ]; then
     echo "Running seeders..."
     php artisan db:seed --force

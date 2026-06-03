@@ -63,9 +63,17 @@ Repo ini disiapkan untuk deploy ke host PHP seperti Railway, bukan Netlify.
    - `APP_URL=https://domain-anda`
    - `APP_KEY=base64:...`
    - `DB_CONNECTION=mysql` atau `pgsql`
-   - `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
+   - `DB_URL` atau `DATABASE_URL` dari Railway database service
+   - Alternatif, set `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` jika kamu memakai variabel terpisah
 3. Jika ingin migrasi otomatis saat container start, set `RUN_MIGRATIONS_ON_STARTUP=true`.
 4. Seeder tidak dijalankan otomatis. Aktifkan hanya jika memang diperlukan dengan `RUN_SEED_ON_STARTUP=true`.
+
+**Koneksi database di Railway:**
+
+1. Buat service database di Railway, misalnya MySQL atau PostgreSQL.
+2. Buka service backend Laravel kamu dan tambahkan variable dari database service.
+3. Paling mudah: set `DB_CONNECTION` sesuai jenis database, lalu isi `DB_URL` dengan connection string Railway.
+4. Jika Railway memberi `DATABASE_URL`, file konfigurasi ini sekarang bisa membacanya langsung tanpa ubahan lain.
 
 **Struktur Proyek (ringkasan):**
 - **`app/Http/Controllers/`**: Semua API controller (AuthController, ProductController, CartController, OrderController, dll)

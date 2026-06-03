@@ -1,4 +1,4 @@
-FROM php:8.3-apache
+FROM php:8.4-apache
 
 # Install system dependencies
 # libpq-dev       → pdo_pgsql, pgsql
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions that are NOT built-in to php:8.3-apache
+# Install PHP extensions that are NOT built-in to php:8.4-apache
 # Already included: curl, ctype, json, tokenizer, openssl
 RUN docker-php-ext-install \
     pdo \
@@ -39,6 +39,8 @@ RUN a2dismod mpm_event mpm_worker 2>/dev/null || true && \
 # Install Composer via official installer
 RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin --filename=composer
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Set working directory
 WORKDIR /var/www/html

@@ -56,7 +56,7 @@ Deskripsi singkat proyek backend PasarLokal untuk tugas Mata Kuliah Aplikasi Ber
 
 Repo ini disiapkan untuk deploy ke host PHP seperti Railway, bukan Netlify.
 
-1. Buat service baru dari repo ini di Railway dengan build memakai `Dockerfile`.
+1. Buat service baru dari repo ini di Railway dengan build memakai `Dockerfile` dan PHP 8.4.
 2. Set environment variables produksi, minimal:
    - `APP_ENV=production`
    - `APP_DEBUG=false`

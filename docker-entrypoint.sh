@@ -11,10 +11,17 @@ if [ ! -f ".env" ] && [ -f ".env.example" ]; then
     cp .env.example .env
 fi
 
-# Generate APP_KEY if it has not been provided by the deploy environment.
+# Generate APP_KEY directly in .env if it has not been provided by the deploy environment.
 if [ -z "$APP_KEY" ]; then
-    echo "Generating APP_KEY..."
-    php artisan key:generate --force
+    APP_KEY="base64:$(php -r 'echo base64_encode(random_bytes(32));')"
+
+    if grep -q '^APP_KEY=' .env 2>/dev/null; then
+        sed -i "s|^APP_KEY=.*|APP_KEY=${APP_KEY}|" .env
+    else
+        echo "APP_KEY=${APP_KEY}" >> .env
+    fi
+
+    export APP_KEY
 fi
 
 # Run migrations only when explicitly enabled.

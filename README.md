@@ -68,6 +68,7 @@ Repo ini disiapkan untuk deploy ke host PHP seperti Railway, bukan Netlify.
 3. Jika ingin migrasi otomatis saat container start, set `RUN_MIGRATIONS_ON_STARTUP=true`.
 4. Saat migrasi otomatis aktif, seeder juga ikut dijalankan lewat `php artisan migrate --seed`.
 5. Seeder terpisah tetap bisa dijalankan hanya jika memang diperlukan dengan `RUN_SEED_ON_STARTUP=true`.
+6. Pastikan `JWT_SECRET` diset di Railway agar token login tetap stabil antar deploy; image ini juga akan mengisi nilai sementara jika belum ada.
 
 **Koneksi database di Railway:**
 

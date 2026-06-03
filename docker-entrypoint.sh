@@ -32,6 +32,19 @@ if [ -z "$APP_KEY" ]; then
     export APP_KEY
 fi
 
+# Generate JWT_SECRET directly in .env if it has not been provided by the deploy environment.
+if [ -z "$JWT_SECRET" ]; then
+    JWT_SECRET="base64:$(php -r 'echo base64_encode(random_bytes(32));')"
+
+    if grep -q '^JWT_SECRET=' .env 2>/dev/null; then
+        sed -i "s|^JWT_SECRET=.*|JWT_SECRET=${JWT_SECRET}|" .env
+    else
+        echo "JWT_SECRET=${JWT_SECRET}" >> .env
+    fi
+
+    export JWT_SECRET
+fi
+
 # Run migrations only when explicitly enabled.
 if [ "${RUN_MIGRATIONS_ON_STARTUP:-false}" = "true" ]; then
     echo "Running migrations..."

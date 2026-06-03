@@ -1,4 +1,4 @@
-FROM php:8.4-apache
+FROM php:8.3-apache
 
 # Install system dependencies
 # libpq-dev       → pdo_pgsql, pgsql
@@ -8,6 +8,7 @@ FROM php:8.4-apache
 # libcurl4-openssl-dev → (curl already built-in, but needed for headers)
 RUN apt-get update && apt-get install -y \
     libpq-dev \
+    default-libmysqlclient-dev \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
@@ -18,10 +19,11 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions that are NOT built-in to php:8.4-apache
+# Install PHP extensions that are NOT built-in to php:8.3-apache
 # Already included: curl, ctype, json, tokenizer, openssl
 RUN docker-php-ext-install \
     pdo \
+    pdo_mysql \
     pdo_pgsql \
     pgsql \
     mbstring \

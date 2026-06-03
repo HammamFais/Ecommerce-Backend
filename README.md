@@ -52,6 +52,21 @@ Deskripsi singkat proyek backend PasarLokal untuk tugas Mata Kuliah Aplikasi Ber
    php artisan jwt:secret
    ```
 
+**Deployment ke Railway:**
+
+Repo ini disiapkan untuk deploy ke host PHP seperti Railway, bukan Netlify.
+
+1. Buat service baru dari repo ini di Railway dengan build memakai `Dockerfile`.
+2. Set environment variables produksi, minimal:
+   - `APP_ENV=production`
+   - `APP_DEBUG=false`
+   - `APP_URL=https://domain-anda`
+   - `APP_KEY=base64:...`
+   - `DB_CONNECTION=mysql` atau `pgsql`
+   - `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
+3. Jika ingin migrasi otomatis saat container start, set `RUN_MIGRATIONS_ON_STARTUP=true`.
+4. Seeder tidak dijalankan otomatis. Aktifkan hanya jika memang diperlukan dengan `RUN_SEED_ON_STARTUP=true`.
+
 **Struktur Proyek (ringkasan):**
 - **`app/Http/Controllers/`**: Semua API controller (AuthController, ProductController, CartController, OrderController, dll)
 - **`app/Http/Requests/`**: Form request validation

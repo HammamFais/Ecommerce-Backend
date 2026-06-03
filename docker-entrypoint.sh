@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 # Fix Apache MPM at runtime
@@ -6,19 +6,28 @@ a2dismod mpm_event mpm_worker 2>/dev/null || true
 a2enmod mpm_prefork 2>/dev/null || true
 a2enmod rewrite 2>/dev/null || true
 
-# Generate APP_KEY if not set
+# Bootstrap a writable .env file if the image does not include one.
+if [ ! -f ".env" ] && [ -f ".env.example" ]; then
+    cp .env.example .env
+fi
+
+# Generate APP_KEY if it has not been provided by the deploy environment.
 if [ -z "$APP_KEY" ]; then
     echo "Generating APP_KEY..."
     php artisan key:generate --force
 fi
 
-# Run migrations
-echo "Running migrations..."
-php artisan migrate --force
+# Run migrations only when explicitly enabled.
+if [ "${RUN_MIGRATIONS_ON_STARTUP:-false}" = "true" ]; then
+    echo "Running migrations..."
+    php artisan migrate --force
+fi
 
-# Run seeders
-echo "Running seeders..."
-php artisan db:seed --force
+# Run seeders only when explicitly enabled.
+if [ "${RUN_SEED_ON_STARTUP:-false}" = "true" ]; then
+    echo "Running seeders..."
+    php artisan db:seed --force
+fi
 
 # Clear and cache config for production
 php artisan config:clear

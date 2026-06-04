@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 # Fix Apache MPM at runtime
@@ -6,19 +6,56 @@ a2dismod mpm_event mpm_worker 2>/dev/null || true
 a2enmod mpm_prefork 2>/dev/null || true
 a2enmod rewrite 2>/dev/null || true
 
-# Generate APP_KEY if not set
-if [ -z "$APP_KEY" ]; then
-    echo "Generating APP_KEY..."
-    php artisan key:generate --force
+# Railway assigns a dynamic PORT; default to 80 if it is not provided.
+PORT="${PORT:-80}"
+
+# Reconfigure Apache to listen on the Railway port at runtime.
+sed -i "s/^Listen .*/Listen ${PORT}/" /etc/apache2/ports.conf
+sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf
+sed -i "s/^ServerName .*/ServerName localhost:${PORT}/" /etc/apache2/apache2.conf 2>/dev/null || true
+
+# Bootstrap a writable .env file if the image does not include one.
+if [ ! -f ".env" ] && [ -f ".env.example" ]; then
+    cp .env.example .env
 fi
 
-# Run migrations
-echo "Running migrations..."
-php artisan migrate --force
+# Generate APP_KEY directly in .env if it has not been provided by the deploy environment.
+if [ -z "$APP_KEY" ]; then
+    APP_KEY="base64:$(php -r 'echo base64_encode(random_bytes(32));')"
 
-# Run seeders
-echo "Running seeders..."
-php artisan db:seed --force
+    if grep -q '^APP_KEY=' .env 2>/dev/null; then
+        sed -i "s|^APP_KEY=.*|APP_KEY=${APP_KEY}|" .env
+    else
+        echo "APP_KEY=${APP_KEY}" >> .env
+    fi
+
+    export APP_KEY
+fi
+
+# Generate JWT_SECRET directly in .env if it has not been provided by the deploy environment.
+if [ -z "$JWT_SECRET" ]; then
+    JWT_SECRET="base64:$(php -r 'echo base64_encode(random_bytes(32));')"
+
+    if grep -q '^JWT_SECRET=' .env 2>/dev/null; then
+        sed -i "s|^JWT_SECRET=.*|JWT_SECRET=${JWT_SECRET}|" .env
+    else
+        echo "JWT_SECRET=${JWT_SECRET}" >> .env
+    fi
+
+    export JWT_SECRET
+fi
+
+# Run migrations only when explicitly enabled.
+if [ "${RUN_MIGRATIONS_ON_STARTUP:-false}" = "true" ]; then
+    echo "Running migrations..."
+    php artisan migrate --force --seed
+fi
+
+# Run seeders separately only when explicitly enabled.
+if [ "${RUN_SEED_ON_STARTUP:-false}" = "true" ]; then
+    echo "Running seeders..."
+    php artisan db:seed --force
+fi
 
 # Clear and cache config for production
 php artisan config:clear

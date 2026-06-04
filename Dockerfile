@@ -8,6 +8,7 @@ FROM php:8.4-apache
 # libcurl4-openssl-dev → (curl already built-in, but needed for headers)
 RUN apt-get update && apt-get install -y \
     libpq-dev \
+    default-libmysqlclient-dev \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
@@ -22,6 +23,7 @@ RUN apt-get update && apt-get install -y \
 # Already included: curl, ctype, json, tokenizer, openssl
 RUN docker-php-ext-install \
     pdo \
+    pdo_mysql \
     pdo_pgsql \
     pgsql \
     mbstring \
@@ -37,6 +39,8 @@ RUN a2dismod mpm_event mpm_worker 2>/dev/null || true && \
 # Install Composer via official installer
 RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin --filename=composer
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Set working directory
 WORKDIR /var/www/html

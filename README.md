@@ -4,7 +4,7 @@
 
 **RESTful API untuk Platform E-Commerce UMKM Lokal**
 
-[![Railway](https://img.shields.io/badge/Deploy-Railway-6e4fff?logo=railway&logoColor=white)](https://ecommerce-backend-production-12cc.up.railway.app)
+[![Vercel](https://img.shields.io/badge/Deploy-Vercel-black?logo=vercel&logoColor=white)](https://pasarlokal-api.vercel.app)
 [![Laravel](https://img.shields.io/badge/Laravel_11-FF2D20?logo=laravel&logoColor=white)](.)
 [![PHP](https://img.shields.io/badge/PHP_8.2+-777BB4?logo=php&logoColor=white)](.)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)](.)
@@ -37,13 +37,13 @@
 |----------|-----------|
 | Framework | Laravel 11 |
 | Language | PHP 8.2+ |
-| Database | PostgreSQL (Railway) |
+| Database | PostgreSQL (Neon) |
 | Auth | JWT (tymon/jwt-auth) |
 | ORM | Eloquent |
 | Payment | Midtrans Snap (Sandbox) |
 | Ongkir | RajaOngkir API V2 (rajaongkir.komerce.id) |
-| Storage | Railway Volume |
-| Deploy | Railway |
+| Storage | Tidak ada (gambar produk berupa URL) |
+| Deploy | Vercel (serverless, runtime `vercel-php`) |
 
 ---
 
